@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from .models import *
-from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, ReviewSerializer
+from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, ReviewSerializer, ProductReviewSerializer
 
 
 @api_view(['GET'])
@@ -35,8 +35,16 @@ def product_detail_api_view(request, id):
 
 @api_view(http_method_names=['GET'])
 def product_list_api_view(request):
-    products = Product.objects.all()
+    products = Product.objects.select_related("category").all()
     data = ProductSerializer(products, many=True).data
+    return Response(data=data,
+                    status=status.HTTP_200_OK)
+
+
+@api_view(http_method_names=['GET'])
+def review_product_list_api_view(request):
+    products = Product.objects.prefetch_related("reviews").all()
+    data = ProductReviewSerializer(products, many=True).data
     return Response(data=data,
                     status=status.HTTP_200_OK)
 
