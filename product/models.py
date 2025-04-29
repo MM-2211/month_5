@@ -10,7 +10,7 @@ class Product(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     price = models.FloatField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name='products')
 
     def __str__(self):
         return self.title
